@@ -40,7 +40,7 @@ export class AuthServiceService {
     localStorage.setItem('adminStatus', JSON.stringify(adminStatus));
   }
 
-  private getAuthStatus(): boolean {
+  getAuthStatus(): boolean {
     return JSON.parse(localStorage.getItem('authStatus') || 'false');
   }
 

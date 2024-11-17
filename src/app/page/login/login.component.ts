@@ -1,19 +1,18 @@
 import { Component } from '@angular/core';
-import {NgIf} from "@angular/common";
-import {FormsModule} from "@angular/forms";
-import {AuthServiceService} from "../../service/auth-service.service";
-import {LoginService} from "../../service/login.service";
-import {Router} from "@angular/router";
+import { Router } from '@angular/router';
+import { LoginService } from '../../service/login.service';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-login',
   standalone: true,
   imports: [
-    NgIf,
-    FormsModule
+    CommonModule,
+    FormsModule,
   ],
   templateUrl: './login.component.html',
-  styleUrl: './login.component.css'
+  styleUrls: ['./login.component.css']
 })
 export class LoginComponent {
 
@@ -21,26 +20,22 @@ export class LoginComponent {
   password: string = '';
   errorMessage: string = '';
 
-  constructor(private authService: AuthServiceService,
-              private loginService: LoginService,
-              private router: Router ) {}
+  constructor(
+    private loginService: LoginService,
+    private router: Router
+  ) {}
 
-  onLogin(): void {
-    const success = this.authService.login(this.username, this.password);
-    if (!success) {
-      this.errorMessage = 'Nome de usuário ou senha inválidos.';
-    }
-  }
-
-  login(){
+  login(): void {
     this.loginService.login(this.username, this.password).subscribe({
-      next:(response) => {
-        this.router.navigate(['/dashboard']);
-        localStorage.setItem('token', btoa(`${this.username}:${this.password}`)); // Armazena as credenciais
+      next: (response: any) => {
+        localStorage.setItem('token', response.token); // Armazena o token retornado pelo backend
         localStorage.setItem('authStatus', JSON.stringify(true));
-    }, error: (err) => {
-        alert("Usuario e senha invalido")
+        this.router.navigate(['/dashboard']); // Redireciona para o dashboard
+      },
+      error: (err) => {
+        this.errorMessage = "Usuário ou senha inválidos. Tente novamente.";
+        console.error(err);
       }
-    })
+    });
   }
 }

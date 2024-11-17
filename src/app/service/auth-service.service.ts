@@ -1,50 +1,56 @@
+import { HttpClient } from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {Router} from "@angular/router";
+import { Observable, tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthServiceService {
+  private apiUrl = 'http://localhost:8080/user'; // Altere para o endpoint correto do backend
+  isAutenticado: boolean = false;
+  isAdmin: boolean = false;
 
-  isAutenticado: boolean = this.getAuthStatus();
-  isAdmin: boolean = this.getAdminStatus();
+  constructor(private http: HttpClient, private router: Router) {}
 
-  constructor(private router: Router) {
-  }
-
-  login(username: string, password: string) {
-    if (username && password) {
-      if (username === 'admin' && password === 'admin') {
-        this.setAuthState(true, true)
-        this.router.navigate(['/dashboard']);
-        return true;
-      } else if (username === 'user' && password === 'user') {
-        this.setAuthState(true, false)
-        this.router.navigate(['/dashboard']);
-        return true;
-      }
-    }
-    return false;
-  }
-
-  logout(): void {
-    localStorage.clear();
-    this.setAuthState(false, false)
-    this.router.navigate(['/']);
-  }
-
-  private setAuthState(authStatus: boolean, adminStatus: boolean): void {
-    this.isAutenticado = authStatus;
-    this.isAdmin = adminStatus;
-    localStorage.setItem('authStatus', JSON.stringify(authStatus));
-    localStorage.setItem('adminStatus', JSON.stringify(adminStatus));
+  login(username: string, password: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/login`, { username, password }).pipe(
+      tap((response: any) => {
+        if (response.token) {
+          this.setAuthState(response.token);
+          this.isAutenticado = true;
+          this.isAdmin = response.roles.includes('ADM');
+          this.router.navigate(['/dashboard']);
+        }
+      })
+    );
   }
 
   getAuthStatus(): boolean {
     return JSON.parse(localStorage.getItem('authStatus') || 'false');
   }
 
-  private getAdminStatus(): boolean {
-    return JSON.parse(localStorage.getItem('adminStatus') || 'false');
+  logout(): void {
+    localStorage.removeItem('token');
+    this.isAutenticado = false;
+    this.isAdmin = false;
+    this.router.navigate(['/login']);
+  }
+
+  private setAuthState(token: string): void {
+    localStorage.setItem('token', token);
+  }
+
+  getToken(): string | null {
+    return localStorage.getItem('token');
+  }
+
+
+  isLoggedIn(): boolean {
+    return !!this.getToken();
+  }
+
+  isAdminRole(): boolean {
+    return this.isAdmin;
   }
 }

@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {Router} from "@angular/router";
-import {AuthServiceService} from "../../service/auth-service.service";
+import {AuthService} from '../../service/auth-service.service';
 import {UtilService} from "../../service/util.service";
 
 @Component({
@@ -15,7 +15,7 @@ export class DashboardComponent implements OnInit{
   title: string = '';
 
   constructor(private _router: Router,
-              private _service: AuthServiceService,
+              private _service: AuthService,
               private utilService: UtilService) {
   }
 

@@ -6,7 +6,7 @@ import { Observable, tap } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
-export class AuthServiceService {
+export class AuthService {
   private apiUrl = 'http://localhost:8080/user'; // Altere para o endpoint correto do backend
   isAutenticado: boolean = false;
   isAdmin: boolean = false;

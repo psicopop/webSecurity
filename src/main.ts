@@ -6,6 +6,9 @@ import { provideHttpClient, withInterceptors, withInterceptorsFromDi } from '@an
 import { provideRouter } from '@angular/router';
 import { routes } from './app/app.routes';
 
+
+
+
 bootstrapApplication(AppComponent, {
   providers: [
     provideHttpClient(withInterceptorsFromDi()), // Configuração para usar interceptores baseados em DI

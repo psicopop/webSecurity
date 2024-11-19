@@ -10,7 +10,7 @@ import { routes } from '../app/app.routes';
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
   providers: [
-    { provide: AuthInterceptor, useClass: AuthInterceptor }, // Registra o interceptor
+    //{ provide: AuthInterceptor, useClass: AuthInterceptor }, // Registra o interceptor
     
   ],
 })

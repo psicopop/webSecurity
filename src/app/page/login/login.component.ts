@@ -36,7 +36,7 @@ export class LoginComponent {
       },
       error: (err) => {
         this.errorMessage = "Usuário ou senha inválidos. Tente novamente.";
-        //console.error(err);
+        console.error(err);
       }
     });
   }
